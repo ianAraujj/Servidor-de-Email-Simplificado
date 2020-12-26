@@ -214,3 +214,166 @@ class AbrirMensagem(APIView):
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+
+class EncaminharMensagem(APIView):
+    parser_classes = (MultiPartParser, FormParser,JSONParser)
+    serializer_class = MensagemSerializer
+    permission_class = AllowAny
+
+    def post(self, request, format=None, **kwargs):
+        
+        id_usuario = kwargs.get("id_usuario", None)
+
+        if id_usuario == None:
+            return Response(
+                data={"detalhes": "Usuario Não Informado"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not Usuario.objects.filter(id=id_usuario).exists():
+            return Response(
+                data={"detalhes": "Usuario Não Encontrado"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        id_mensagem = kwargs.get("id_mensagem", None)
+
+        if id_mensagem == None:
+            return Response(
+                data={"detalhes": "Mensagem Não Informada"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not Mensagem.objects.filter(id=id_mensagem).exists():
+            return Response(
+                data={"detalhes": "Mensagem Não Encontrada"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        usuario = Usuario.objects.get(id=id_usuario)
+        mensagem = Mensagem.objects.get(id=id_mensagem)
+
+        if mensagem.destinatario != usuario and mensagem.remetente != usuario:
+            return Response(
+                data={"detalhes": "Usuário Não Autorizado"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        destinatario = request.data.get('destinatario', None)
+
+        if destinatario == None:
+            return Response(
+                data={"detalhes": "Destinatario Não Informado"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not Usuario.objects.filter(id=destinatario).exists():
+            return Response(
+                data={"detalhes": "Destinatario Não Encontrado"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        usuario_destinatario = Usuario.objects.get(id=destinatario)
+
+        try:
+
+            mensagem_encaminhada = Mensagem()
+
+            mensagem_encaminhada.remetente = usuario
+            mensagem_encaminhada.destinatario = usuario_destinatario
+            mensagem_encaminhada.assunto = mensagem.assunto
+            mensagem_encaminhada.corpo = mensagem.corpo
+
+            mensagem_encaminhada.save()
+
+            
+            return Response(
+                data={"detalhes": "Mensagem Encaminhada"}, 
+                status=status.HTTP_201_CREATED
+            )
+
+        except:
+
+            return Response(
+                data={"detalhes": "Erro no Servidor"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class ResponderMensagem(APIView):
+    parser_classes = (MultiPartParser, FormParser,JSONParser)
+    serializer_class = MensagemSerializer
+    permission_class = AllowAny
+
+    def post(self, request, format=None, **kwargs):
+
+        id_usuario = kwargs.get("id_usuario", None)
+
+        if id_usuario == None:
+            return Response(
+                data={"detalhes": "Usuario Não Informado"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not Usuario.objects.filter(id=id_usuario).exists():
+            return Response(
+                data={"detalhes": "Usuario Não Encontrado"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        id_mensagem = kwargs.get("id_mensagem", None)
+
+        if id_mensagem == None:
+            return Response(
+                data={"detalhes": "Mensagem Não Informada"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not Mensagem.objects.filter(id=id_mensagem).exists():
+            return Response(
+                data={"detalhes": "Mensagem Não Encontrada"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        usuario = Usuario.objects.get(id=id_usuario)
+        mensagem = Mensagem.objects.get(id=id_mensagem)
+
+        if mensagem.destinatario != usuario:
+            return Response(
+                data={"detalhes": "Usuário Não Autorizado"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        corpo = request.data.get('corpo', None)
+
+        if corpo == None:
+            return Response(
+                data={"detalhes": "O seguinte campo é obrigatório: corpo"},
+                status=status.HTTP_400_BAD_REQUEST   
+            )
+    
+
+        try:
+
+            resposta = Mensagem()
+            resposta.remetente = usuario
+            resposta.destinatario = mensagem.remetente
+            resposta.assunto = mensagem.assunto
+            resposta.corpo = corpo
+            resposta.save()
+
+            mensagem.respostas.add(resposta)
+            mensagem.save()
+
+            
+            return Response(
+                data={"detalhes": "Mensagem Respondida"}, 
+                status=status.HTTP_201_CREATED
+            )
+
+        except:
+
+            return Response(
+                data={"detalhes": "Erro no Servidor"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
