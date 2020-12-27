@@ -71,5 +71,48 @@ Caso queira testar o cliente com um servidor local, altere o valor desta variáv
 
 ## Rotas Criadas
 
-1. 
+1. Entrar No Sistema
+
+      * path('api/usuario/entrar')
+      
+      * POST
+      
+      * Rota utlizada para o Usuário entrar no Sistema. O Usuário deve informar apenas seu nome no programa do Cliente.
+
+2. Enviar Mensagem
+
+      * path('api/usuario/<str:usuario>/mensagem/enviar')
+      
+      * POST
+
+3. Listar Todas as Mensagens
+
+      * path('api/usuario/<str:usuario>/mensagem/listar')
+      
+      * GET
+
+4. Deletar Uma Mensagem
+
+      * path('api/usuario/<str:usuario>/mensagem/<str:id_mensagem>/apagar')
+      
+      * DELETE
+      
+5. Abrir Mensagem:
+
+      * path('api/usuario/<str:usuario>/mensagem/<str:id_mensagem>/abrir')
+      
+      * GET
+      
+6. Encaminhar uma Mensagem pra Alguém
+
+      * path('api/usuario/<str:usuario>/mensagem/<str:id_mensagem>/encaminhar')
+      
+      * POST
+      
+7. Responder uma Mensagem
+
+      * path('api/usuario/<str:usuario>/mensagem/<str:id_mensagem>/responder')
+      
+      * POST
+     
     
