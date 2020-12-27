@@ -73,7 +73,7 @@ Caso queira testar o cliente com um servidor local, altere o valor desta variáv
   
   * As rotas foram implementadas neste arquivo:
 
-          https://github.com/ianAraujj/Servidor-de-Email-Simplificado/blob/main/mensagem/views.py
+https://github.com/ianAraujj/Servidor-de-Email-Simplificado/blob/main/mensagem/views.py
 
 ## Rotas Criadas
 
