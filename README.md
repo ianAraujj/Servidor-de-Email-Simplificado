@@ -12,3 +12,9 @@ Servidor de Email Simplificado no Modelo REST
         user: admin
 
         senha: admin
+
+## Cliente:
+
+  1. Endereço: https://repl.it/@IanLucas/Cliente
+  
+  2. Repositório: https://github.com/ianAraujj/Cliente-Python-da-Aplica-o-de-E-mail-Simplificado
