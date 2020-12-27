@@ -3,7 +3,7 @@ Servidor de Email Simplificado no Modelo REST
 
 ## Endereço Eletrônico:
   
-  * https://servidor-email.herokuapp.com/
+  * https://servidor-email.herokuapp.com/api/
   
 ## Endereço Eletrônico para Administração
 
