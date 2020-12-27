@@ -13,6 +13,51 @@ from mensagem.serializers import UsuarioSerializer, MensagemSerializer
 from mensagem.models import Usuario, Mensagem
 
 
+class RegistarUsuario(APIView):
+    parser_classes = (MultiPartParser, FormParser,JSONParser)
+    serializer_class = UsuarioSerializer
+    permission_class = AllowAny
+
+    def post(self, request, format=None, **kwargs):
+
+        nome = request.data.get('nome', None)
+
+        if nome == None:
+            return Response(
+                data={"detalhes": "O seguinte campo é obrigatório: nome"},
+                status=status.HTTP_400_BAD_REQUEST   
+            )
+        
+        usuario = Usuario.objects.filter(nome=nome)
+
+
+        if usuario.count() != 0:
+
+            serializer = UsuarioSerializer(usuario[0], many=False)
+
+            return Response(
+                data={"detalhes": serializer.data},
+                status=status.HTTP_200_OK
+            )
+        
+        try:
+            novo_usuario = Usuario()
+            novo_usuario.nome = nome
+
+            novo_usuario.save()
+
+            return Response(
+                data={"detalhes": "Usuario Criado"}, 
+                status=status.HTTP_201_CREATED
+            )
+
+        except:
+            return Response(
+                data={"detalhes": "Erro no Servidor"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class EnviarMensagem(APIView):
     parser_classes = (MultiPartParser, FormParser,JSONParser)
     serializer_class = MensagemSerializer
@@ -20,21 +65,21 @@ class EnviarMensagem(APIView):
 
     def post(self, request, format=None, **kwargs):
 
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        remetente = Usuario.objects.get(id=id_usuario)
+        remetente = Usuario.objects.get(nome=nome_usuario)
         
         destinatario = request.data.get('destinatario', None)
         assunto = request.data.get('assunto', None)
@@ -46,13 +91,13 @@ class EnviarMensagem(APIView):
                 status=status.HTTP_400_BAD_REQUEST   
             )
 
-        if not Usuario.objects.filter(id=destinatario).exists():
+        if not Usuario.objects.filter(nome=destinatario).exists():
             return Response(
                 data={"detalhes": "Destinatario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        destinatario_usuario = Usuario.objects.get(id=destinatario)
+        destinatario_usuario = Usuario.objects.get(nome=destinatario)
 
 
         try:
@@ -80,21 +125,21 @@ class ListarMensagens(APIView):
 
     def get(self, request, format=None, **kwargs):
 
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        usuario = Usuario.objects.get(id=id_usuario)
+        usuario = Usuario.objects.get(nome=nome_usuario)
 
         mensagens = Mensagem.objects.filter(destinatario=usuario)
         serializer = self.serializer_class(mensagens, many=True)
@@ -111,15 +156,15 @@ class DeletarMensagem(APIView):
 
     def delete(self, request, format=None, **kwargs):
 
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
@@ -139,7 +184,7 @@ class DeletarMensagem(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        usuario = Usuario.objects.get(id=id_usuario)
+        usuario = Usuario.objects.get(nome=nome_usuario)
         mensagem = Mensagem.objects.get(id=id_mensagem)
 
         if mensagem.destinatario != usuario and mensagem.remetente != usuario:
@@ -171,15 +216,15 @@ class AbrirMensagem(APIView):
 
     def get(self, request, format=None, **kwargs):
 
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
@@ -199,7 +244,7 @@ class AbrirMensagem(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        usuario = Usuario.objects.get(id=id_usuario)
+        usuario = Usuario.objects.get(nome=nome_usuario)
         mensagem = Mensagem.objects.get(id=id_mensagem)
 
         if mensagem.destinatario != usuario and mensagem.remetente != usuario:
@@ -222,19 +267,21 @@ class EncaminharMensagem(APIView):
 
     def post(self, request, format=None, **kwargs):
         
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        usuario = Usuario.objects.get(nome=nome_usuario)
         
         id_mensagem = kwargs.get("id_mensagem", None)
 
@@ -249,8 +296,7 @@ class EncaminharMensagem(APIView):
                 data={"detalhes": "Mensagem Não Encontrada"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
-        
-        usuario = Usuario.objects.get(id=id_usuario)
+
         mensagem = Mensagem.objects.get(id=id_mensagem)
 
         if mensagem.destinatario != usuario and mensagem.remetente != usuario:
@@ -267,13 +313,13 @@ class EncaminharMensagem(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=destinatario).exists():
+        if not Usuario.objects.filter(nome=destinatario).exists():
             return Response(
                 data={"detalhes": "Destinatario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        usuario_destinatario = Usuario.objects.get(id=destinatario)
+        usuario_destinatario = Usuario.objects.get(nome=destinatario)
 
         try:
 
@@ -307,19 +353,21 @@ class ResponderMensagem(APIView):
 
     def post(self, request, format=None, **kwargs):
 
-        id_usuario = kwargs.get("id_usuario", None)
+        nome_usuario = kwargs.get("usuario", None)
 
-        if id_usuario == None:
+        if nome_usuario == None:
             return Response(
                 data={"detalhes": "Usuario Não Informado"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not Usuario.objects.filter(id=id_usuario).exists():
+        if not Usuario.objects.filter(nome=nome_usuario).exists():
             return Response(
                 data={"detalhes": "Usuario Não Encontrado"}, 
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        usuario = Usuario.objects.get(nome=nome_usuario)
         
         id_mensagem = kwargs.get("id_mensagem", None)
 
@@ -335,7 +383,6 @@ class ResponderMensagem(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        usuario = Usuario.objects.get(id=id_usuario)
         mensagem = Mensagem.objects.get(id=id_mensagem)
 
         if mensagem.destinatario != usuario:

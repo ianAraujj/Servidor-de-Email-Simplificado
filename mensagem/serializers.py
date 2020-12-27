@@ -4,7 +4,7 @@ from mensagem.models import *
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model=Usuario
-        fields = ('nome',)
+        fields = ('id', 'nome')
 
 class MensagemSerializer(serializers.ModelSerializer):
     remetente = UsuarioSerializer(many=False)
