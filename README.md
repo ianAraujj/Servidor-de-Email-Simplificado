@@ -23,19 +23,20 @@ Servidor de Email Simplificado no Modelo REST. Esta aplicação foi desenvolvida
 
   1. Requisitos: 
  
-    * Python3 Instalado na Máquina
+    * Python3 Instalado na sua Máquina
     
-  2. Criar um ambiente virtual:
+  2. Criar um ambiente virtual: 
   
     * python3 -m venv myvenv
+    
+   Tutorial Ótimo Aqui: https://tutorial.djangogirls.org/pt/django_installation/
    
   3. Entrar no ambiente virtual:
    
     * No Windows: myvenv\Scripts\activate 
     
     * No LINUX: source myvenv/bin/activate 
-   
-   Tutorial Ótimo Aqui: https://tutorial.djangogirls.org/pt/django_installation/
+ 
    
   4. Instalar as Dependências do projeto:
   
