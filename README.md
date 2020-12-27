@@ -1,5 +1,5 @@
 # Servidor-de-Email-Simplificado
-Servidor de Email Simplificado no Modelo REST
+Servidor de Email Simplificado no Modelo REST. Esta aplicação foi desenvolvida utilizando DJANGO.
 
 ## Endereço Eletrônico:
   
@@ -18,3 +18,26 @@ Servidor de Email Simplificado no Modelo REST
   1. Endereço Para Testar ONLINE: https://repl.it/@IanLucas/Cliente
   
   2. Repositório: https://github.com/ianAraujj/Cliente-Python-da-Aplica-o-de-E-mail-Simplificado
+
+## Instruções Para Testar o Servidor Localmente:
+
+  1. Requisitos: 
+ 
+    * Python3 Instalado na Máquina
+    
+  2. Criar um ambiente virtual:
+  
+    * python3 -m venv myvenv
+   
+  3. Entrar no ambiente virtual:
+   
+    * No Windows: myvenv\Scripts\activate 
+    
+    * No LINUX: source myvenv/bin/activate 
+   
+   Tutorial Ótimo Aqui: https://tutorial.djangogirls.org/pt/django_installation/
+   
+  4. Instalar as Dependências do projeto:
+  
+    * Comando: pip install -r
+    
