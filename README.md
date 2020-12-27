@@ -77,7 +77,7 @@ Caso queira testar o cliente com um servidor local, altere o valor desta variáv
       
       * POST
       
-      * Rota utlizada para o Usuário entrar no Sistema. O Usuário deve informar apenas seu nome no programa do Cliente.
+      * Rota utlizada para o Usuário entrar no Sistema. O Usuário deve informar apenas seu nome no programa do Cliente. Se o Usuário já tiver Cadastrado, então o Sistema realiza o LOGIN, mas se o Usuário for novo, o Sistema irá cadastrar esse novo Usuário.
 
 2. Enviar Mensagem
 
