@@ -69,6 +69,12 @@ OBSERVACAO:
 
 Caso queira testar o cliente com um servidor local, altere o valor desta variável para: "http://127.0.0.1:8000/"
 
+## Análise do Código:
+  
+  * As rotas foram implementadas neste arquivo:
+
+          https://github.com/ianAraujj/Servidor-de-Email-Simplificado/blob/main/mensagem/views.py
+
 ## Rotas Criadas
 
 1. Entrar No Sistema
