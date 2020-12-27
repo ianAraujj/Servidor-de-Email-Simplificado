@@ -51,4 +51,25 @@ Servidor de Email Simplificado no Modelo REST. Esta aplicação foi desenvolvida
     python3 manage.py runserver
     
   O servidor irá rodar no endereço local: 127.0.0.1 e na porta 8000:
+
+## Instruções Para Testar o Cliente Localmente:
+
+OBSERVACAO: 
+    Para Testes ONLINE: https://repl.it/@IanLucas/Cliente
+
+  1. Por motivos organizacionais, o código do cliente da aplicação está em um repositório separado. Então o primeiro passo é clonar o seguinte repositório com endereço: https://github.com/ianAraujj/Cliente-Python-da-Aplica-o-de-E-mail-Simplificado
+  
+  2. Criar um ambiente virtual, ativar o ambiente virtual e instalar as dependências igual aos passos 2, 3 e 4 do item anterior
+  
+  3. Para executar, digite no terminal:
+  
+    *    python3 cliente.py
+
+  4. Na linha 05 do código do cliente, a variável ```url_base``` indica que o cliente está configurado para se comunicar com o servidor através do endereço "https://servidor-email.herokuapp.com/", o projeto do servidor foi hospedado na plataforma HEROKU.
+
+Caso queira testar o cliente com um servidor local, altere o valor desta variável para: "http://127.0.0.1:8000/"
+
+## Rotas Criadas
+
+1. 
     
