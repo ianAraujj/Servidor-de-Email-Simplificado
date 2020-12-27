@@ -39,5 +39,5 @@ Servidor de Email Simplificado no Modelo REST. Esta aplicação foi desenvolvida
    
   4. Instalar as Dependências do projeto:
   
-    * Comando: pip install -r
+    * Comando: pip install -r requirements.txt OU pip3 install -r requirements.txt
     
